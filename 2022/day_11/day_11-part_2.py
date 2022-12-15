@@ -1,4 +1,6 @@
 class Monkey:
+    safe_mod = 1
+
     def __init__(self):
         self.items = []
         self.operation = None
@@ -16,8 +18,8 @@ class Monkey:
     def inspect(self, item):
         self.times_inspected += 1
         operation = lambda old: eval(self.operation)
-        item = operation(item)
-        return item // 3
+        item = operation(item) % Monkey.safe_mod
+        return item
 
     def take_turn(self):
         while len(self.items) > 0:
@@ -46,11 +48,13 @@ for i in range(0, len(lines), 7):
     monkeys[i//7].items = [int(item) for item in lines[i+1].split(':')[1].split(',')]
     monkeys[i//7].operation = lines[i+2].split(':')[1].split('=')[1]
     monkeys[i//7].throw_test = Monkey.pull_value(lines[i+3])
+    Monkey.safe_mod *= monkeys[i//7].throw_test
     monkeys[i//7].throw_on_true = monkeys[Monkey.pull_value(lines[i+4])]
     monkeys[i//7].throw_on_false = monkeys[Monkey.pull_value(lines[i+5])]
 
-number_of_rounds = 20
+number_of_rounds = 10000
 for round in range(number_of_rounds):
+    print(f'Round {round}')
     for monkey in monkeys:
         monkey.take_turn()
 
