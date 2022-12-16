@@ -34,6 +34,10 @@ for rock in rocks:
             for x in range(min(x_start, x_end), max((x_start, x_end))+1):
                 grid[y_start][x] = '█'
 
+grid.append(['░' for _ in range(len(grid[0]))])
+grid.append(['█' for _ in range(len(grid[0]))])
+
+
 sand_source = [500, 0]
 sand_source_x = sand_source[0] - min_x
 sand_source_y = sand_source[1] - min_y
@@ -41,17 +45,25 @@ sand_source_y = sand_source[1] - min_y
 sand_at_rest = 0
 sand_x = sand_source_x
 sand_y = sand_source_y
-grid[sand_y][sand_x] = 'O'
 
 while True:
-    if sand_x-1 == -1 or sand_x+1 > len(grid[0]) or sand_y+1 >= len(grid):
-        break
+    if sand_x-1 == -1:
+        for line in grid:
+            line.insert(0,'░')
+        grid[-1][0] = '█'
+        min_x -= 1
+        sand_source_x += 1
+        sand_x += 1
+    elif sand_x+1 == len(grid[0]):
+        for line in grid:
+            line.append('░')
+        grid[-1][-1] = '█'
 
     if grid[sand_y+1][sand_x] == '░':
         sand_y += 1
         grid[sand_y-1][sand_x] = '░'
         grid[sand_y][sand_x] = 'O'
-    elif grid[sand_y+1][sand_x-1] == '░':
+    elif grid[sand_y+1][sand_x-1] == '░' and sand_x != 0:
         sand_y += 1
         sand_x -= 1
         grid[sand_y-1][sand_x+1] = '░'
@@ -65,6 +77,10 @@ while True:
         sand_at_rest += 1
         sand_x = sand_source_x
         sand_y = sand_source_y
-        grid[sand_y][sand_x] = 'O'
+        if grid[sand_source_y][sand_source_x] == 'O':
+            break
+        else:
+            grid[sand_y][sand_x] = 'O'
+
 
 print(sand_at_rest)
