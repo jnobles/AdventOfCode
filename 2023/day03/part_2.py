@@ -1,32 +1,26 @@
 import re
 
-with open('practice_input') as f:
+with open('puzzle_input') as f:
     puzzle_input = [line.strip() for line in f.readlines()]
-
-
-def is_symbol(pos_x, pos_y):
-    try:
-        if re.match(r'\d', puzzle_input[pos_y][pos_x]):
-            return True
-    except IndexError:
-        pass
-    return False
-
-
-def check_neighbors(pos_x, pos_y):
-    return any([is_symbol(pos_x - 1, pos_y - 1),
-                is_symbol(pos_x, pos_y - 1),
-                is_symbol(pos_x + 1, pos_y - 1),
-                is_symbol(pos_x - 1, pos_y),
-                is_symbol(pos_x + 1, pos_y),
-                is_symbol(pos_x - 1, pos_y + 1),
-                is_symbol(pos_x, pos_y + 1),
-                is_symbol(pos_x + 1, pos_y + 1)])
 
 
 gear_ratio_sum = 0
 
 for i in range(len(puzzle_input)):
     for match in re.finditer(r'\*', puzzle_input[i]):
-        if check_neighbors(i, match.start()):
-            print(i, match.start())
+        touching_parts = []
+        for part in re.finditer(r'(\d+)', puzzle_input[i - 1]):
+            left, right = part.span()
+            if match.start() in range(left-1, right+1):
+                touching_parts.append(int(part.group(1)))
+        for part in re.finditer(r'(\d+)', puzzle_input[i]):
+            left, right = part.span()
+            if match.start() in range(left-1, right+1):
+                touching_parts.append(int(part.group(1)))
+        for part in re.finditer(r'(\d+)', puzzle_input[i + 1]):
+            left, right = part.span()
+            if match.start() in range(left-1, right+1):
+                touching_parts.append(int(part.group(1)))
+        if len(touching_parts) == 2:
+            gear_ratio_sum += touching_parts[0] * touching_parts[1]
+print(gear_ratio_sum)
