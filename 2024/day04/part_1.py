@@ -1,4 +1,4 @@
-with open("practice_input") as f:
+with open("puzzle_input") as f:
     puzzle_input = [line.strip() for line in f.readlines()]
 
 xmas_count = 0
@@ -27,6 +27,8 @@ for y in range(len(puzzle_input)):
             except IndexError:
                 search_down = False
             try:
+                if x - 3 < 0:
+                    raise IndexError
                 search_down_left = all([
                     puzzle_input[y+1][x-1] == "M",
                     puzzle_input[y+2][x-2] == "A",
@@ -34,6 +36,8 @@ for y in range(len(puzzle_input)):
             except IndexError:
                 search_down_left = False
             try:
+                if x - 3 < 0:
+                    raise IndexError
                 search_left = all([
                     puzzle_input[y][x-1] == "M",
                     puzzle_input[y][x-2] == "A",
@@ -41,6 +45,8 @@ for y in range(len(puzzle_input)):
             except IndexError:
                 search_left = False
             try:
+                if x - 3 < 0 or y - 3 < 0:
+                    raise IndexError
                 search_up_left = all([
                     puzzle_input[y-1][x-1] == "M",
                     puzzle_input[y-2][x-2] == "A",
@@ -48,6 +54,8 @@ for y in range(len(puzzle_input)):
             except IndexError:
                 search_up_left = False
             try:
+                if y - 3 < 0:
+                    raise IndexError
                 search_up = all([
                     puzzle_input[y-1][x] == "M",
                     puzzle_input[y-2][x] == "A",
@@ -55,14 +63,14 @@ for y in range(len(puzzle_input)):
             except IndexError:
                 search_up = False
             try:
+                if y - 3 < 0:
+                    raise IndexError
                 search_up_right = all([
                     puzzle_input[y-1][x+1] == "M",
                     puzzle_input[y-2][x+2] == "A",
                     puzzle_input[y-3][x+3] == "S"])
             except IndexError:
                 search_up_right = False
-            print(x, y)
-            print([search_right, search_down_right, search_down, search_down_left, search_left, search_up_left, search_up, search_up_right])
 
             xmas_count += sum([search_right, search_down_right, search_down, search_down_left, search_left, search_up_left, search_up, search_up_right])
 print(xmas_count)
